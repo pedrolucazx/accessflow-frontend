@@ -1,0 +1,2 @@
+echo "✨ Running lint-staged..."
+yarn lint-staged
