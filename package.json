@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
+    "@hookform/resolvers": "^5.0.1",
     "graphql": "^16.11.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.56.4",
     "react-router-dom": "^7.6.0",
     "zod": "^3.25.28"
   },

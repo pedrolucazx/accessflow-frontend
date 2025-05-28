@@ -1,10 +1,11 @@
+import { useToast } from '@/context/ToastContext';
+import { LOGIN } from '@/graphql/queyrs';
+import type { LoginInput, LoginPayload } from '@/graphql/types';
 import { useLazyQuery } from '@apollo/client';
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { LOGIN } from '../../graphql/queyrs';
-import { formatZodErrors } from '../../utils/formatZodErrors';
 import './styles.css';
-import type { LoginInput, LoginPayload } from '../../graphql/types';
 
 export function LoginPage() {
   const schema = z.object({
@@ -17,14 +18,15 @@ export function LoginPage() {
   });
 
   type LoginForm = z.infer<typeof schema>;
-  const [formData, setFormData] = useState<LoginForm>({
-    email: '',
-    senha: '',
-  });
+  const { addToast } = useToast();
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof LoginForm, string>>
-  >({});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(schema),
+  });
 
   const [login, { loading }] = useLazyQuery<
     { login: LoginPayload },
@@ -32,31 +34,30 @@ export function LoginPage() {
   >(LOGIN, {
     onCompleted(data) {
       console.log(data);
+      addToast({
+        title: 'Login realizado',
+        type: 'success',
+        description: 'Você foi autenticado com sucesso.',
+      });
     },
     onError(error) {
-      console.error(error);
+      addToast({
+        title: 'Erro ao fazer login',
+        type: 'error',
+        description: error.message,
+      });
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-    setErrors((prev) => ({ ...prev, [id]: undefined }));
+  const onSubmit = (data: LoginForm) => {
+    login({ variables: { input: data } });
   };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const result = schema.safeParse(formData);
-    if (!result.success) setErrors(formatZodErrors<LoginForm>(result.error));
-    login({ variables: { input: result.data! } });
-  };
-
   return (
     <main className="login-page">
       <section className="login-page__container">
         <form
           noValidate
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           aria-labelledby="login-title"
           className="login-page__form form"
         >
@@ -74,14 +75,13 @@ export function LoginPage() {
             <input
               id="email"
               type="email"
-              value={formData.email}
               className="form__input"
+              {...register('email')}
               aria-describedby={errors.email ? 'email-error' : undefined}
-              onChange={handleChange}
             />
             {errors.email && (
               <p id="email-error" className="form__error" role="alert">
-                {errors.email}
+                {errors.email.message}
               </p>
             )}
           </div>
@@ -93,14 +93,13 @@ export function LoginPage() {
             <input
               id="senha"
               type="password"
-              value={formData.senha}
               className="form__input"
+              {...register('senha')}
               aria-describedby={errors.senha ? 'senha-error' : undefined}
-              onChange={handleChange}
             />
             {errors.senha && (
               <p id="senha-error" className="form__error" role="alert">
-                {errors.senha}
+                {errors.senha.message}
               </p>
             )}
           </div>
