@@ -2,6 +2,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
+import { ToastProvider } from './context/ToastContext.tsx';
 import './index.css';
 
 const client = new ApolloClient({
@@ -12,7 +13,9 @@ const client = new ApolloClient({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </ApolloProvider>
   </StrictMode>
 );
