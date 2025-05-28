@@ -1,9 +1,11 @@
 import { useToast } from '@/context/ToastContext';
 import { LOGIN } from '@/graphql/queyrs';
 import type { LoginInput, LoginPayload } from '@/graphql/types';
+import { useSession } from '@/hooks/useSession';
 import { useLazyQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 import { z } from 'zod';
 import './styles.css';
 
@@ -19,6 +21,8 @@ export function LoginPage() {
 
   type LoginForm = z.infer<typeof schema>;
   const { addToast } = useToast();
+  const { startSession } = useSession();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -33,12 +37,14 @@ export function LoginPage() {
     { input: LoginInput }
   >(LOGIN, {
     onCompleted(data) {
-      console.log(data);
+      const { login: user } = data;
+      startSession({ token: user?.token, user });
       addToast({
         title: 'Login realizado',
         type: 'success',
         description: 'Você foi autenticado com sucesso.',
       });
+      navigate('/');
     },
     onError(error) {
       addToast({
