@@ -17,3 +17,20 @@ export interface LoginPayload {
   token: string;
   perfis: Perfil[];
 }
+
+export interface SignUpInput {
+  nome: string;
+  email: string;
+  senha: string;
+}
+
+export type User = {
+  id: number;
+  nome: string;
+  email: string;
+  senha: string;
+  ativo: boolean;
+  data_criacao?: string;
+  data_update?: string;
+  perfis: Perfil[];
+};

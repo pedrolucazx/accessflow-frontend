@@ -16,3 +16,21 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const SIGNUP = gql`
+  mutation SignUp($input: SignUpInput) {
+    signUp(input: $input) {
+      id
+      nome
+      email
+      ativo
+      data_criacao
+      data_update
+      perfis {
+        id
+        nome
+        descricao
+      }
+    }
+  }
+`;

@@ -1,5 +1,5 @@
-.login-page {
-  .login-page__container {
+.signup-page {
+  .signup-page__container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8,7 +8,7 @@
     background-color: var(--color-bg-alt);
   }
 
-  .login-page__form {
+  .signup-page__form {
     width: 100%;
     max-width: 28.125rem;
 
@@ -17,7 +17,7 @@
     }
   }
 
-  .login-page__title {
+  .signup-page__title {
     margin-bottom: 0.5rem;
     text-align: center;
     font-size: 1.5rem;
@@ -25,7 +25,7 @@
     font-weight: 600;
   }
 
-  .login-page__subtitle {
+  .signup-page__subtitle {
     margin-bottom: 1.5rem;
     text-align: center;
     font-size: 1rem;
