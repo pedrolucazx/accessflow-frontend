@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { TOAST_DURATION } from '../config/constants';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -9,7 +9,7 @@ interface Toast {
   type: ToastType;
 }
 
-interface ToastContextType {
+export interface ToastContextType {
   addToast: (toast: Omit<Toast, 'id'>) => void;
 }
 
@@ -20,14 +20,6 @@ interface ToastProviderProps {
 export const ToastContext = createContext<ToastContextType | undefined>(
   undefined
 );
-
-export const useToast = (): ToastContextType => {
-  const context = useContext(ToastContext);
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
-};
 
 export const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<Toast[]>([]);

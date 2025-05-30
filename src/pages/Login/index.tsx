@@ -1,4 +1,4 @@
-import { useToast } from '@/context/ToastContext';
+import { useToast } from '@/hooks/useToast';
 import { LOGIN } from '@/graphql/queyrs';
 import type { LoginInput, LoginPayload } from '@/graphql/types';
 import { useSession } from '@/hooks/useSession';
@@ -119,9 +119,10 @@ export function LoginPage() {
             Entrar
           </button>
           <button
-            type="submit"
+            type="button"
             disabled={loading}
             aria-busy={loading}
+            onClick={() => navigate('/signup')}
             className="button button--secondary form__button login-page__submit"
           >
             Cadastrar

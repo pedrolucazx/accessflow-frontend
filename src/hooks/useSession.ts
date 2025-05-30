@@ -1,5 +1,4 @@
-import { SessionContext } from '@/context/SessionContext';
-import { authManager } from '@/utils/authManager';
+import { SessionContext, authManager } from '@/context/SessionContext';
 import { useContext } from 'react';
 
 export const useSession = () => {

@@ -1,6 +1,6 @@
+import { LOCAL_STORAGE } from '@/config/constants';
 import type { LoginPayload } from '@/graphql/types';
-import { authManager } from '@/utils/authManager';
-import React, { createContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useCallback, useMemo, useState } from 'react';
 
 interface SessionData {
   token: string;
@@ -9,7 +9,6 @@ interface SessionData {
 
 interface SessionContextProps {
   session: SessionData;
-  updateSession: (data: Partial<SessionData>) => void;
   startSession: (data: SessionData) => void;
   removeSession: () => void;
 }
@@ -22,17 +21,27 @@ export const SessionContext = createContext<SessionContextProps | undefined>(
   undefined
 );
 
+export const authManager = {
+  set: (token: string, user: LoginPayload) => {
+    localStorage.setItem(LOCAL_STORAGE.TOKEN, token);
+    localStorage.setItem(LOCAL_STORAGE.USER, JSON.stringify(user));
+  },
+
+  get: () => {
+    const token = localStorage.getItem(LOCAL_STORAGE.TOKEN) || '';
+    const user = localStorage.getItem(LOCAL_STORAGE.USER);
+    return { token, user: user ? JSON.parse(user) : {} };
+  },
+
+  clear: () => {
+    localStorage.removeItem(LOCAL_STORAGE.TOKEN);
+    localStorage.removeItem(LOCAL_STORAGE.USER);
+  },
+};
+
 export const SessionProvider = ({ children }: SessionProviderProps) => {
   const initialSession = authManager.get();
   const [session, setSession] = useState<SessionData>(initialSession);
-
-  const updateSession = useCallback((data: Partial<SessionData>) => {
-    setSession((prev) => {
-      const updated = { ...prev, ...data };
-      authManager.set(updated.token, updated.user);
-      return updated;
-    });
-  }, []);
 
   const startSession = useCallback((data: SessionData) => {
     setSession(data);
@@ -45,8 +54,8 @@ export const SessionProvider = ({ children }: SessionProviderProps) => {
   }, []);
 
   const contextValue = useMemo(
-    () => ({ session, updateSession, startSession, removeSession }),
-    [session, updateSession, startSession, removeSession]
+    () => ({ session, startSession, removeSession }),
+    [session, startSession, removeSession]
   );
 
   return (
