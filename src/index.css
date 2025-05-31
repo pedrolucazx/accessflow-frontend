@@ -73,7 +73,7 @@ button {
 .button--secondary {
   color: var(--color-text);
   background-color: var(--color-bg);
-  border: 1px solid var(--color-primary);
+  border: 0.063rem solid var(--color-primary);
 }
 
 .button--secondary:hover {
@@ -105,7 +105,7 @@ button {
   padding: 0.5rem;
   font-size: 1rem;
   border-radius: 0.25rem;
-  border: 1px solid var(--color-bg-alt);
+  border: 0.063rem solid var(--color-bg-alt);
 }
 
 .form__input:focus {
@@ -139,10 +139,10 @@ button {
 
 .toast {
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   color: #fff;
-  max-width: 300px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  max-width: 18.75rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.3s ease;
 }
 
@@ -166,10 +166,14 @@ button {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-0.625rem);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.layout {
+  display: flex;
 }
