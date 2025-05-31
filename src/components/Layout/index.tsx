@@ -7,7 +7,9 @@ export function Layout() {
   return (
     <div className="layout">
       <Sidebar />
-      <main>{isAuth ? <Outlet /> : <Navigate to="/login" replace />}</main>
+      <main className="main">
+        {isAuth ? <Outlet /> : <Navigate to="/login" replace />}
+      </main>
     </div>
   );
 }
