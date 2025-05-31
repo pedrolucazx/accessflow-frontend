@@ -1,0 +1,98 @@
+.sidebar {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  max-width: 12.5rem;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  border-right: 0.063rem solid var(--color-bg-alt);
+
+  .sidebar__brand {
+    margin: 2rem;
+
+    .sidebar__title {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--color-text);
+    }
+  }
+
+  .sidebar__nav {
+    flex: 1;
+
+    .nav__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      .nav__item {
+        margin-bottom: 0.5rem;
+
+        .nav__link {
+          display: flex;
+          font-weight: 500;
+          align-items: center;
+          font-size: 0.875rem;
+          padding: 0.75rem 1rem;
+          text-decoration: none;
+          color: var(--color-text);
+          transition: background-color 0.3s;
+
+          .nav__icon {
+            margin-right: 0.75rem;
+          }
+
+          .nav__text {
+            flex: 1;
+          }
+        }
+
+        .nav__link.active {
+          background-color: var(--color-bg-alt);
+        }
+      }
+    }
+  }
+}
+
+.sidebar__toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  z-index: 1001;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.sidebar__toggle--open {
+  left: 1rem;
+}
+
+.sidebar__toggle--close {
+  right: 1rem;
+}
+
+@media (max-width: 26.875rem) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -26.875rem;
+    width: 100vw;
+    height: 100vh;
+    min-width: 100vw;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar__toggle {
+    display: block;
+  }
+}
