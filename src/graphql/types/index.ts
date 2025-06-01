@@ -4,7 +4,7 @@ export interface LoginInput {
 }
 
 export interface Perfil {
-  id: string;
+  id: number;
   nome: string;
   descricao: string;
 }
@@ -34,3 +34,9 @@ export type User = {
   data_update?: string;
   perfis: Perfil[];
 };
+
+export interface UserFilter {
+  id?: number;
+  nome?: string;
+  email?: string;
+}

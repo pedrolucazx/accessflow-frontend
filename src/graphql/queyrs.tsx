@@ -34,3 +34,39 @@ export const SIGNUP = gql`
     }
   }
 `;
+
+export const GET_ALL_USERS = gql`
+  query {
+    getAllUsers {
+      id
+      nome
+      email
+      ativo
+      data_criacao
+      data_update
+      perfis {
+        id
+        nome
+        descricao
+      }
+    }
+  }
+`;
+
+export const GET_USER_BY_PARAMS = gql`
+  query GetUserByParams($filter: UserFilter!) {
+    getUserByParams(filter: $filter) {
+      id
+      nome
+      email
+      ativo
+      data_criacao
+      data_update
+      perfis {
+        id
+        nome
+        descricao
+      }
+    }
+  }
+`;

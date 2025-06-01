@@ -1,0 +1,120 @@
+.userManagement {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  .userManagement__header {
+    width: 100%;
+
+    .userManagement__title {
+      color: var(--color-text);
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      line-height: 1.25;
+      margin: 0;
+    }
+  }
+  .userManagement__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .form__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+  }
+}
+
+.userManagement__badge {
+  display: flex;
+  gap: 0.5rem;
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .badge--admin {
+    background-color: #faccfd;
+    color: #793d7d;
+  }
+
+  .badge--common {
+    background-color: #e1fccc;
+    color: #597d3d;
+  }
+
+  .badge--active {
+    background-color: #bbf7d0;
+    color: #166534;
+  }
+
+  .badge--inactive {
+    background-color: #fecaca;
+    color: #991b1b;
+  }
+}
+
+.userManagement__actions {
+  display: flex;
+  gap: 0.5rem;
+
+  .userManagement__button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .userManagement__button--delete {
+    color: #991b1b;
+  }
+
+  .userManagement__button--edit {
+    color: #1e40af;
+  }
+}
+
+@media (max-width: 1024px) {
+  .form__group {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .userManagement {
+    margin-top: 2rem;
+  }
+
+  .userManagement__form {
+    gap: 0;
+  }
+  .form__group {
+    flex: 1 1 100%;
+  }
+
+  .form__actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 100%;
+    padding-top: 0;
+  }
+}
