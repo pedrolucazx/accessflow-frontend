@@ -1,7 +1,6 @@
 .table {
   width: 100%;
   overflow-x: auto;
-  margin: 1rem 0;
 
   .table__container {
     width: 100%;

@@ -13,7 +13,6 @@ export interface ITableRows {
 export interface TableProps {
   columns?: ITableColumn[];
   rows?: ITableRows[];
-  caption?: string;
 }
 
 export function Table({ columns = [], rows = [] }: TableProps) {

@@ -114,7 +114,7 @@ export function LoginPage() {
             type="submit"
             disabled={loading}
             aria-busy={loading}
-            className="button button--primary form__button login-page__submit"
+            className="button button--primary form__button"
           >
             Entrar
           </button>
@@ -123,7 +123,7 @@ export function LoginPage() {
             disabled={loading}
             aria-busy={loading}
             onClick={() => navigate('/signup')}
-            className="button button--secondary form__button login-page__submit"
+            className="button button--secondary form__button"
           >
             Cadastrar
           </button>
