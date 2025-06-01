@@ -1,7 +1,7 @@
-import { useToast } from '@/hooks/useToast';
-import { LOGIN } from '@/graphql/queyrs';
+import { LOGIN } from '@/graphql';
 import type { LoginInput, LoginPayload } from '@/graphql/types';
 import { useSession } from '@/hooks/useSession';
+import { useToast } from '@/hooks/useToast';
 import { useLazyQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

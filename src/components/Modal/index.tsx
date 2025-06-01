@@ -1,3 +1,4 @@
+import { CloseIcon } from '@/assets/icons';
 import React, { useEffect, useRef } from 'react';
 import './styles.css';
 
@@ -69,7 +70,7 @@ export const Modal: React.FC<ModalProps> = ({
             onClick={onClose}
             aria-label="Fechar modal"
           >
-            &times;
+            <CloseIcon />
           </button>
         </header>
         <div className="modal__body">{body}</div>

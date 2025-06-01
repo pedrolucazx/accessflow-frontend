@@ -1,4 +1,4 @@
-import { SIGNUP } from '@/graphql/queyrs';
+import { SIGNUP } from '@/graphql';
 import type { SignUpInput, User } from '@/graphql/types';
 import { useToast } from '@/hooks/useToast';
 import { useMutation } from '@apollo/client';
