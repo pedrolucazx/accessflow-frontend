@@ -122,3 +122,39 @@ export const UPDATE_USER = gql`
     }
   }
 `;
+
+export const GET_PROFILE_BY_PARAMS = gql`
+  query GetProfileByParams($filter: ProfileFilterInput!) {
+    getProfileByParams(filter: $filter) {
+      id
+      nome
+      descricao
+    }
+  }
+`;
+
+export const CREATE_PROFILE = gql`
+  mutation CreateProfile($input: ProfileInput!) {
+    createProfile(input: $input) {
+      id
+      nome
+      descricao
+    }
+  }
+`;
+
+export const UPDATE_PROFILE = gql`
+  mutation UpdateProfile($updateProfileId: Int!, $input: ProfileUpdateInput!) {
+    updateProfile(id: $updateProfileId, input: $input) {
+      id
+      nome
+      descricao
+    }
+  }
+`;
+
+export const DELETE_PROFILE = gql`
+  mutation DeleteProfile($deleteProfileId: Int!) {
+    deleteProfile(id: $deleteProfileId)
+  }
+`;

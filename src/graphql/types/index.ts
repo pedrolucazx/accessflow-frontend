@@ -47,3 +47,20 @@ export interface UserInput {
   senha?: string;
   perfis: { id: number }[];
 }
+
+export type Profile = {
+  id: number;
+  nome: string;
+  descricao?: string;
+};
+
+export type ProfileFilter = {
+  id?: number;
+  nome?: string;
+  descricao?: string;
+};
+
+export type ProfileInput = {
+  nome: string;
+  descricao?: string;
+};

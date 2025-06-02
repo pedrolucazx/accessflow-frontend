@@ -309,7 +309,7 @@ export function SearchUsers() {
               ID
             </label>
             <input
-              id="id"
+              id="id-filter"
               type="number"
               placeholder="ID"
               className="form__input"
@@ -321,7 +321,7 @@ export function SearchUsers() {
               Nome
             </label>
             <input
-              id="nome"
+              id="nome-filter"
               type="text"
               placeholder="Nome"
               className="form__input"
@@ -333,7 +333,7 @@ export function SearchUsers() {
               E-mail
             </label>
             <input
-              id="email"
+              id="email-filter"
               type="email"
               placeholder="E-mail"
               className="form__input"
