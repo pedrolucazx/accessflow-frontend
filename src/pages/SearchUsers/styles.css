@@ -7,7 +7,9 @@
   box-sizing: border-box;
 
   .userManagement__header {
-    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     .userManagement__title {
       color: var(--color-text);
@@ -20,18 +22,16 @@
   }
   .userManagement__form {
     display: flex;
-    flex-wrap: wrap;
     gap: 1rem;
   }
 
   .form__actions {
-    display: flex;
     gap: 1rem;
-    margin-top: 1rem;
     width: 100%;
-    max-width: 300px;
+    display: flex;
+    max-height: 36px;
+    align-self: flex-end;
     margin-bottom: 1.5rem;
-    padding-top: 1rem;
   }
 }
 
@@ -102,11 +102,28 @@
 @media (max-width: 768px) {
   .userManagement {
     margin-top: 2rem;
+
+    .userManagement__header {
+      flex-direction: column;
+
+      .userManagement__title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .button {
+        width: 100%;
+        align-items: center;
+      }
+    }
   }
 
   .userManagement__form {
     gap: 0;
+    display: flex;
+    flex-direction: column;
   }
+
   .form__group {
     flex: 1 1 100%;
   }

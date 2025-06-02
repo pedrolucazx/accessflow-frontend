@@ -61,17 +61,17 @@
         border: none;
         border-radius: 4px;
         cursor: pointer;
+      }
 
-        .modal__button--primary {
-          color: var(--color-text);
-          background-color: var(--color-bg);
-          border: 0.063rem solid var(--color-primary);
-        }
+      .modal__button--primary {
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        border: 0.063rem solid var(--color-primary);
+      }
 
-        .modal__button--secondary {
-          color: var(--color-bg);
-          background-color: var(--color-primary);
-        }
+      .modal__button--secondary {
+        color: var(--color-bg);
+        background-color: var(--color-primary);
       }
     }
   }
