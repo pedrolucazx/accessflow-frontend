@@ -40,3 +40,10 @@ export interface UserFilter {
   nome?: string;
   email?: string;
 }
+
+export interface UserInput {
+  nome: string;
+  email: string;
+  senha?: string;
+  perfis: { id: number }[];
+}

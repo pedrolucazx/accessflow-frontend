@@ -86,3 +86,39 @@ export const GET_ALL_PROFILES = gql`
     }
   }
 `;
+
+export const CREATE_USER = gql`
+  mutation CreateUser($input: UserInput) {
+    createUser(input: $input) {
+      id
+      nome
+      email
+      ativo
+      data_criacao
+      data_update
+      perfis {
+        id
+        nome
+        descricao
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($input: UserUpdateInput!, $updateUserId: Int!) {
+    updateUser(input: $input, id: $updateUserId) {
+      id
+      nome
+      email
+      ativo
+      data_criacao
+      data_update
+      perfis {
+        id
+        nome
+        descricao
+      }
+    }
+  }
+`;

@@ -2,85 +2,184 @@ import { AddUserIcon, DeleteIcon, EditIcon } from '@/assets/icons';
 import { Modal, type ModalProps } from '@/components/Modal';
 import { Spinner } from '@/components/Spinner';
 import { Table, type ITableColumn, type ITableRows } from '@/components/Table';
-import { DELETE_USER, GET_ALL_USERS, GET_USER_BY_PARAMS } from '@/graphql';
-import type { User, UserFilter } from '@/graphql/types';
+import { UserForm, type UserFormData } from '@/components/UserForm';
+import {
+  CREATE_USER,
+  DELETE_USER,
+  GET_ALL_USERS,
+  GET_USER_BY_PARAMS,
+  UPDATE_USER,
+} from '@/graphql';
+import type { User, UserFilter, UserInput } from '@/graphql/types';
 import { useToast } from '@/hooks/useToast';
 import { formatTimestampToDate } from '@/utils/formatDate';
 import { removeEmptyFields } from '@/utils/removeEmptyFields';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { useEffect, useMemo, useState } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import './styles.css';
 
 export function SearchUsers() {
   const { addToast } = useToast();
-
   const { register, handleSubmit, reset } = useForm<UserFilter>();
   const [modalContent, setModalContent] = useState<ModalProps>(
     {} as ModalProps
   );
   const [filteredUsers, setFilteredUsers] = useState<User[] | null>(null);
 
-  const [getAllUsers, { data: usersList, loading: isLoadingUsers, refetch }] =
-    useLazyQuery<{
-      getAllUsers: User[];
-    }>(GET_ALL_USERS, {
-      onError(error) {
-        addToast({
-          title: 'Erro ao carregar usuários',
-          type: 'error',
-          description: error.message,
-        });
-      },
-    });
-
-  const [getUserByParams, { loading: isLoadingUser }] = useLazyQuery<
-    { getUserByParams: User },
-    { filter: UserFilter }
-  >(GET_USER_BY_PARAMS, {
-    onCompleted(data) {
-      setFilteredUsers([data.getUserByParams]);
-    },
+  const {
+    data: usersList,
+    loading: isLoadingUsers,
+    refetch: refetchUsers,
+  } = useQuery<{ getAllUsers: User[] }>(GET_ALL_USERS, {
     onError(error) {
       addToast({
-        title: 'Erro ao filtrar usuários',
+        title: 'Erro ao carregar usuários',
         type: 'error',
         description: error.message,
       });
     },
   });
 
-  const [deleteUser] = useMutation<
+  const [getUserByParams, { loading: isLoadingUser }] = useLazyQuery<
+    { getUserByParams: User },
+    { filter: UserFilter }
+  >(GET_USER_BY_PARAMS, {
+    onCompleted: ({ getUserByParams }) => setFilteredUsers([getUserByParams]),
+    onError: (error) =>
+      addToast({
+        title: 'Erro ao filtrar usuários',
+        type: 'error',
+        description: error.message,
+      }),
+  });
+
+  const handleMutationFeedback = (
+    action: 'created' | 'updated' | 'deleted'
+  ) => {
+    const actions = {
+      created: 'criado',
+      updated: 'atualizado',
+      deleted: 'excluído',
+    };
+
+    addToast({
+      title: `Usuário ${actions[action]}`,
+      type: 'success',
+      description: `Usuário ${actions[action]} com sucesso!`,
+    });
+    onCloseModal();
+    refetchUsers();
+    reset();
+  };
+
+  const handleMutationError = (action: string, error: Error) =>
+    addToast({
+      title: `Erro ao ${action}`,
+      type: 'error',
+      description: error.message,
+    });
+
+  const [deleteUser, { loading: isLoadingDeleteUser }] = useMutation<
     { deleteUser: string },
     { deleteUserId: number }
   >(DELETE_USER, {
-    onCompleted(data) {
-      addToast({
-        title: 'Usuário excluído',
-        type: 'success',
-        description: data?.deleteUser,
-      });
-      refetch();
-    },
-    onError(error) {
-      addToast({
-        title: 'Erro ao excluir',
-        type: 'error',
-        description: `Não foi possível deletar o usuário: ${error.message}`,
-      });
-    },
+    onCompleted: () => handleMutationFeedback('deleted'),
+    onError: (error) => handleMutationError('excluir o usuário', error),
   });
+
+  const [createUser, { loading: isLoadingCreateUser }] = useMutation<
+    { createUser: User },
+    { input: UserInput }
+  >(CREATE_USER, {
+    onCompleted: () => handleMutationFeedback('created'),
+    onError: (error) => handleMutationError('criar o usuário', error),
+  });
+
+  const [editUser, { loading: isLoadingEditUser }] = useMutation<
+    { editUser: User },
+    { input: UserInput; updateUserId: number }
+  >(UPDATE_USER, {
+    onCompleted: () => handleMutationFeedback('updated'),
+    onError: (error) => handleMutationError('atualizar o usuário', error),
+  });
+
+  const isLoading = useMemo(
+    () =>
+      isLoadingUsers ||
+      isLoadingUser ||
+      isLoadingCreateUser ||
+      isLoadingDeleteUser ||
+      isLoadingEditUser,
+    [
+      isLoadingEditUser,
+      isLoadingCreateUser,
+      isLoadingUsers,
+      isLoadingDeleteUser,
+      isLoadingDeleteUser,
+    ]
+  );
 
   const onCloseModal = () => setModalContent({ isOpen: false });
 
-  const onOpenDeleteModal = (id: number) =>
+  const onOpenCreateUserModal = () => {
+    return setModalContent({
+      isOpen: true,
+      title: 'Cadastrar Usuário',
+      body: (
+        <UserForm
+          onSubmitForm={(values) => {
+            const data: UserInput = {
+              email: values?.email,
+              nome: values?.nome,
+              senha: values?.senha,
+              perfis:
+                values?.perfis?.map(({ value }) => ({
+                  id: Number(value),
+                })) ?? [],
+            };
+
+            return createUser({ variables: { input: data } });
+          }}
+        />
+      ),
+    });
+  };
+
+  const onOpenEditUserModal = (user: UserFormData, id: number) => {
+    return setModalContent({
+      isOpen: true,
+      title: 'Editar Usuário',
+      body: (
+        <UserForm
+          onSubmitForm={(values) => {
+            const data: UserInput = {
+              email: values?.email,
+              nome: values?.nome,
+              senha: values?.senha,
+              perfis:
+                values?.perfis?.map(({ value }) => ({
+                  id: Number(value),
+                })) ?? [],
+            };
+            return editUser({
+              variables: { input: data, updateUserId: id },
+            });
+          }}
+          defaultValues={user}
+        />
+      ),
+    });
+  };
+
+  const onOpenDeleteModal = (id: number) => {
     setModalContent({
       isOpen: true,
       title: 'Confirmar exclusão',
       body: (
         <>
-          <p>Você tem certeza que deseja excluir este usuário?</p>
-          <p className="modal__warning">Essa ação não pode ser desfeita.</p>
+          <p>Tem certeza de que deseja excluir este usuário?</p>
+          <p className="modal__warning">Essa ação não poderá ser desfeita.</p>
         </>
       ),
       actionButtons: [
@@ -99,26 +198,29 @@ export function SearchUsers() {
         },
       ],
     });
+  };
 
   const onSubmit = (data: UserFilter) => {
     const hasFilters = data.id || data.nome || data.email;
-    if (hasFilters) {
-      getUserByParams({ variables: { filter: removeEmptyFields(data) } });
-    } else {
-      setFilteredUsers(null);
-    }
+
+    return hasFilters
+      ? getUserByParams({ variables: { filter: removeEmptyFields(data) } })
+      : setFilteredUsers(null);
   };
 
-  const COLUMNS: ITableColumn[] = [
-    { name: 'id', label: 'ID' },
-    { name: 'name', label: 'Nome' },
-    { name: 'email', label: 'Email' },
-    { name: 'createdAt', label: 'Data Criação' },
-    { name: 'updatedAt', label: 'Data Atualização' },
-    { name: 'status', label: 'Status' },
-    { name: 'profiles', label: 'Perfis' },
-    { name: 'actions', label: 'Ações' },
-  ];
+  const COLUMNS: ITableColumn[] = useMemo(
+    () => [
+      { name: 'id', label: 'ID' },
+      { name: 'name', label: 'Nome' },
+      { name: 'email', label: 'Email' },
+      { name: 'createdAt', label: 'Criado em' },
+      { name: 'updatedAt', label: 'Atualizado em' },
+      { name: 'status', label: 'Status' },
+      { name: 'profiles', label: 'Perfis' },
+      { name: 'actions', label: 'Ações' },
+    ],
+    []
+  );
 
   const ROWS: ITableRows[] = useMemo(() => {
     const source = filteredUsers ?? usersList?.getAllUsers ?? [];
@@ -142,8 +244,8 @@ export function SearchUsers() {
         <div className="userManagement__badge">
           {user?.perfis?.map(({ nome, id }) => (
             <span
-              className={`badge ${id === 1 ? 'badge--admin' : 'badge--common'}`}
               key={id}
+              className={`badge ${id === 1 ? 'badge--admin' : 'badge--common'}`}
             >
               {nome}
             </span>
@@ -162,6 +264,19 @@ export function SearchUsers() {
           <button
             className="userManagement__button userManagement__button--edit"
             aria-label="Editar usuário"
+            onClick={() =>
+              onOpenEditUserModal(
+                {
+                  ...user,
+                  perfis: user.perfis?.map(({ id, nome }) => ({
+                    label: nome,
+                    value: String(id),
+                    className: id === 1 ? 'badge--admin' : 'badge--common',
+                  })),
+                },
+                user?.id
+              )
+            }
           >
             <EditIcon />
           </button>
@@ -170,16 +285,16 @@ export function SearchUsers() {
     }));
   }, [filteredUsers, usersList]);
 
-  useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
-
   return (
     <>
       <main className="userManagement" aria-label="Gerenciamento de Usuários">
         <header className="userManagement__header">
           <h1 className="userManagement__title">Gerenciamento de Usuários</h1>
-          <button type="button" className="button button--primary">
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={onOpenCreateUserModal}
+          >
             <AddUserIcon /> Novo usuário
           </button>
         </header>
@@ -187,7 +302,6 @@ export function SearchUsers() {
         <form
           className="userManagement__form"
           role="search"
-          aria-label="Formulário de filtro de usuários"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="form__group">
@@ -243,19 +357,9 @@ export function SearchUsers() {
           </div>
         </form>
 
-        {isLoadingUsers || isLoadingUser ? (
-          <Spinner />
-        ) : (
-          <Table columns={COLUMNS} rows={ROWS} />
-        )}
+        {isLoading ? <Spinner /> : <Table columns={COLUMNS} rows={ROWS} />}
       </main>
-      <Modal
-        isOpen={modalContent.isOpen}
-        title={modalContent.title}
-        body={modalContent.body}
-        onClose={onCloseModal}
-        actionButtons={modalContent.actionButtons}
-      />
+      <Modal {...modalContent} onClose={onCloseModal} />
     </>
   );
 }
