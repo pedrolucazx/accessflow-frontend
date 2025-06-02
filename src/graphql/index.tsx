@@ -76,3 +76,13 @@ export const DELETE_USER = gql`
     deleteUser(id: $deleteUserId)
   }
 `;
+
+export const GET_ALL_PROFILES = gql`
+  query {
+    getAllProfiles {
+      id
+      nome
+      descricao
+    }
+  }
+`;
