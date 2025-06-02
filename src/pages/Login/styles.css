@@ -11,6 +11,7 @@
   .login-page__form {
     width: 100%;
     max-width: 28.125rem;
+    padding: 2rem;
 
     @media (max-width: 30rem) {
       padding: 1rem;

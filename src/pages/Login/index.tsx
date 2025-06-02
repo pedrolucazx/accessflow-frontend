@@ -122,7 +122,7 @@ export function LoginPage() {
             type="button"
             disabled={loading}
             aria-busy={loading}
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/cadastro')}
             className="button button--secondary form__button"
           >
             Cadastrar
