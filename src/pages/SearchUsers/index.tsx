@@ -27,11 +27,9 @@ export function SearchUsers() {
   );
   const [filteredUsers, setFilteredUsers] = useState<User[] | null>(null);
 
-  const {
-    data: usersList,
-    loading: isLoadingUsers,
-    refetch: refetchUsers,
-  } = useQuery<{ getAllUsers: User[] }>(GET_ALL_USERS, {
+  const { data: usersList, loading: isLoadingUsers } = useQuery<{
+    getAllUsers: User[];
+  }>(GET_ALL_USERS, {
     onError(error) {
       addToast({
         title: 'Erro ao carregar usuários',
@@ -69,7 +67,6 @@ export function SearchUsers() {
       description: `Usuário ${actions[action]} com sucesso!`,
     });
     onCloseModal();
-    refetchUsers();
     reset();
   };
 
@@ -84,6 +81,8 @@ export function SearchUsers() {
     { deleteUser: string },
     { deleteUserId: number }
   >(DELETE_USER, {
+    refetchQueries: [{ query: GET_ALL_USERS }],
+    awaitRefetchQueries: true,
     onCompleted: () => handleMutationFeedback('deleted'),
     onError: (error) => handleMutationError('excluir o usuário', error),
   });
@@ -92,6 +91,8 @@ export function SearchUsers() {
     { createUser: User },
     { input: UserInput }
   >(CREATE_USER, {
+    refetchQueries: [{ query: GET_ALL_USERS }],
+    awaitRefetchQueries: true,
     onCompleted: () => handleMutationFeedback('created'),
     onError: (error) => handleMutationError('criar o usuário', error),
   });
@@ -100,6 +101,8 @@ export function SearchUsers() {
     { editUser: User },
     { input: UserInput; updateUserId: number }
   >(UPDATE_USER, {
+    refetchQueries: [{ query: GET_ALL_USERS }],
+    awaitRefetchQueries: true,
     onCompleted: () => handleMutationFeedback('updated'),
     onError: (error) => handleMutationError('atualizar o usuário', error),
   });

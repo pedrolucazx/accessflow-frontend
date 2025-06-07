@@ -33,11 +33,9 @@ export function SearchProfiles() {
     null
   );
 
-  const {
-    data: profileList,
-    loading: isLoadingProfiles,
-    refetch: refetchProfiles,
-  } = useQuery<{ getAllProfiles: Perfil[] }>(GET_ALL_PROFILES, {
+  const { data: profileList, loading: isLoadingProfiles } = useQuery<{
+    getAllProfiles: Perfil[];
+  }>(GET_ALL_PROFILES, {
     onError(error) {
       addToast({
         title: 'Erro ao carregar perfis',
@@ -77,7 +75,6 @@ export function SearchProfiles() {
       description: `Perfil ${actions[action]} com sucesso!`,
     });
     onCloseModal();
-    refetchProfiles();
     reset();
   };
 
@@ -92,6 +89,8 @@ export function SearchProfiles() {
     { deleteProfile: string },
     { deleteProfileId: number }
   >(DELETE_PROFILE, {
+    refetchQueries: [{ query: GET_ALL_PROFILES }],
+    awaitRefetchQueries: true,
     onCompleted: () => handleMutationFeedback('deleted'),
     onError: (error) => handleMutationError('excluir o perfil', error),
   });
@@ -100,6 +99,8 @@ export function SearchProfiles() {
     { createProfile: Profile },
     { input: ProfileInput }
   >(CREATE_PROFILE, {
+    refetchQueries: [{ query: GET_ALL_PROFILES }],
+    awaitRefetchQueries: true,
     onCompleted: () => handleMutationFeedback('created'),
     onError: (error) => handleMutationError('criar o perfil', error),
   });
@@ -108,6 +109,8 @@ export function SearchProfiles() {
     { editProfile: Profile },
     { input: ProfileInput; updateProfileId: number }
   >(UPDATE_PROFILE, {
+    refetchQueries: [{ query: GET_ALL_PROFILES }],
+    awaitRefetchQueries: true,
     onCompleted: () => handleMutationFeedback('updated'),
     onError: (error) => handleMutationError('atualizar o perfil', error),
   });
