@@ -1,24 +1,25 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { ROUTES } from './config/routes';
 import { Home } from './pages/Home';
 import { LoginPage } from './pages/Login';
 import { SearchProfiles } from './pages/SearchProfiles';
 import { SearchUsers } from './pages/SearchUsers';
+import { Settings } from './pages/Settings';
 import { SignUp } from './pages/Signup';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/cadastro" element={<SignUp />} />
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/usuarios" element={<SearchUsers />} />
-          <Route path="/perfis" element={<SearchProfiles />} />
-        </Route>
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path={ROUTES.NOT_PROTECTED.LOGIN} element={<LoginPage />} />
+      <Route path={ROUTES.NOT_PROTECTED.REGISTER} element={<SignUp />} />
+      <Route element={<Layout />}>
+        <Route path={ROUTES.PROTECTED.HOME} element={<Home />} />
+        <Route path={ROUTES.PROTECTED.USERS} element={<SearchUsers />} />
+        <Route path={ROUTES.PROTECTED.PROFILES} element={<SearchProfiles />} />
+        <Route path={ROUTES.PROTECTED.SETTINGS} element={<Settings />} />
+      </Route>
+    </Routes>
   );
 }
 

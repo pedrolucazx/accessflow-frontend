@@ -1,3 +1,4 @@
+import { ROUTES } from '@/config/routes';
 import { GET_ALL_PROFILES } from '@/graphql';
 import type { Perfil } from '@/graphql/types';
 import { useSession } from '@/hooks/useSession';
@@ -158,7 +159,7 @@ export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
           {!isAuth && (
             <button
               type="button"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate(ROUTES.NOT_PROTECTED.LOGIN)}
               className="button button--secondary form__button"
             >
               Entrar

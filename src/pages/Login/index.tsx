@@ -1,3 +1,4 @@
+import { ROUTES } from '@/config/routes';
 import { LOGIN } from '@/graphql';
 import type { LoginInput, LoginPayload } from '@/graphql/types';
 import { useSession } from '@/hooks/useSession';
@@ -44,7 +45,7 @@ export function LoginPage() {
         type: 'success',
         description: 'Você foi autenticado com sucesso.',
       });
-      navigate('/');
+      navigate(ROUTES?.PROTECTED.HOME);
     },
     onError(error) {
       addToast({
