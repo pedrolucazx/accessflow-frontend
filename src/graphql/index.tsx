@@ -158,3 +158,14 @@ export const DELETE_PROFILE = gql`
     deleteProfile(id: $deleteProfileId)
   }
 `;
+
+export const GET_METRICS = gql`
+  query GetMetrics {
+    getMetrics {
+      totalUsers
+      activeUsers
+      inactiveUsers
+      totalProfiles
+    }
+  }
+`;

@@ -64,3 +64,10 @@ export type ProfileInput = {
   nome: string;
   descricao?: string;
 };
+
+export type Metrics = {
+  totalUsers: number;
+  activeUsers: number;
+  inactiveUsers: number;
+  totalProfiles: number;
+};
