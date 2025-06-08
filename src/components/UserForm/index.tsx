@@ -13,6 +13,7 @@ import { CustomSelect, type IOption } from '../CustomSelect';
 import './styles.css';
 
 const userSchema = z.object({
+  id: z.number().optional(),
   nome: z.string().min(3, 'Nome é obrigatório'),
   email: z.string().email('E-mail inválido'),
   senha: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').optional(),
@@ -31,7 +32,12 @@ interface UserFormProps {
 export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { isAuth } = useSession();
+  const {
+    isAuth,
+    session: { user },
+  } = useSession();
+  const isOwnUser = isAuth && Number(user?.id) === defaultValues?.id;
+  const showSenha = !defaultValues || isOwnUser;
 
   const {
     control,
@@ -111,7 +117,7 @@ export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
             )}
           </div>
 
-          {!defaultValues && (
+          {showSenha && (
             <div className="form__group">
               <label htmlFor="senha" className="form__label">
                 Senha
