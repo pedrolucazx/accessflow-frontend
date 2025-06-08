@@ -1,16 +1,21 @@
 import {
   CloseIcon,
   HomeIcon,
+  LogoutIcon,
   MenuIcon,
   ProfileIcon,
   SettingsIcon,
   UsersIcon,
 } from '@/assets/icons';
+import { ROUTES } from '@/config/routes';
+import { useSession } from '@/hooks/useSession';
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './styles.css';
 
 export function Sidebar() {
+  const { removeSession } = useSession();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -19,6 +24,11 @@ export function Sidebar() {
     { to: '/perfis', label: 'Perfis', icon: <ProfileIcon /> },
     { to: '/configuracoes', label: 'Configurações', icon: <SettingsIcon /> },
   ];
+
+  const logout = () => {
+    removeSession();
+    navigate(ROUTES.NOT_PROTECTED.LOGIN, { replace: true });
+  };
 
   return (
     <>
@@ -39,9 +49,11 @@ export function Sidebar() {
             <CloseIcon />
           </button>
         )}
+
         <div className="sidebar__brand">
           <h1 className="sidebar__title">AccessFlow</h1>
         </div>
+
         <nav className="sidebar__nav" aria-label="Menu lateral">
           <ul className="nav__list">
             {navItems.map(({ to, label, icon }) => (
@@ -59,6 +71,19 @@ export function Sidebar() {
                 </NavLink>
               </li>
             ))}
+
+            <li className="nav__item">
+              <button
+                type="button"
+                className="nav__link nav__link--logout"
+                onClick={logout}
+              >
+                <span className="nav__icon" aria-hidden="true">
+                  <LogoutIcon />
+                </span>
+                <span className="nav__text">Sair</span>
+              </button>
+            </li>
           </ul>
         </nav>
       </aside>
