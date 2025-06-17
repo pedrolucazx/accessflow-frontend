@@ -2,7 +2,7 @@ import { LOCAL_STORAGE } from '@/config/constants';
 import type { LoginPayload } from '@/graphql/types';
 import React, { createContext, useCallback, useMemo, useState } from 'react';
 
-interface SessionData {
+export interface SessionData {
   token: string;
   user: LoginPayload;
 }

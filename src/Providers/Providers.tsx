@@ -1,4 +1,3 @@
-// Providers.tsx
 import { ROUTES } from '@/config/routes';
 import { authManager, SessionProvider } from '@/context/SessionContext';
 import { ToastProvider } from '@/context/ToastContext';
@@ -23,18 +22,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   const errorLink = useMemo(
     () =>
-      onError(({ graphQLErrors, networkError }) => {
-        if (
-          graphQLErrors?.some(
-            (e) => e.extensions?.code === 'UNAUTHENTICATED'
-          ) ||
-          (networkError as { statusCode?: number })?.statusCode === 401
-        ) {
+      onError(({ graphQLErrors }) => {
+        if (!graphQLErrors) return;
+
+        const unauthenticatedError = graphQLErrors.find(
+          (err) => err.extensions?.code === 'UNAUTHENTICATED'
+        );
+        const forbiddenError = graphQLErrors.find(
+          (err) => err.extensions?.code === 'FORBIDDEN'
+        );
+
+        if (forbiddenError) {
+          navigate(ROUTES.PROTECTED.HOME, { replace: true });
+          return;
+        }
+
+        if (unauthenticatedError) {
           authManager.clear();
           navigate(ROUTES.NOT_PROTECTED.LOGIN, { replace: true });
         }
       }),
-    [navigate]
+    [navigate, authManager]
   );
 
   const authLink = useMemo(

@@ -1,7 +1,18 @@
-import { SessionContext, authManager } from '@/context/SessionContext';
+import { SessionContext, type SessionData } from '@/context/SessionContext';
+import type { LoginPayload } from '@/graphql/types';
 import { useContext } from 'react';
 
-export const useSession = () => {
+export interface UseSessionReturn {
+  session: SessionData;
+  user: LoginPayload;
+  token: string;
+  isAuth: boolean;
+  isAdmin: boolean;
+  startSession: (data: SessionData) => void;
+  removeSession: () => void;
+}
+
+export const useSession = (): UseSessionReturn => {
   const context = useContext(SessionContext);
 
   if (!context) {
@@ -9,18 +20,24 @@ export const useSession = () => {
   }
 
   try {
-    const { token, user } = authManager.get();
+    const { token, user } = context.session;
+
     return {
       ...context,
-      user,
       token,
+      user,
       isAuth: Boolean(token && user),
+      isAdmin: Boolean(user?.perfis?.some((p) => p.nome === 'admin')),
     };
   } catch (error) {
     console.error(error);
+
     return {
       ...context,
+      token: '',
+      user: {} as LoginPayload,
       isAuth: false,
+      isAdmin: false,
     };
   }
 };
