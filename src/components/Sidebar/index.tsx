@@ -9,21 +9,46 @@ import {
 } from '@/assets/icons';
 import { ROUTES } from '@/config/routes';
 import { useSession } from '@/hooks/useSession';
-import { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './styles.css';
 
+interface navItem {
+  to: string;
+  label: string;
+  adminOnly?: boolean;
+  icon: React.ReactNode;
+}
+
 export function Sidebar() {
-  const { removeSession } = useSession();
   const navigate = useNavigate();
+  const { removeSession, isAdmin } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = [
-    { to: '/', label: 'Dashboard', icon: <HomeIcon /> },
-    { to: '/usuarios', label: 'Usuários', icon: <UsersIcon /> },
-    { to: '/perfis', label: 'Perfis', icon: <ProfileIcon /> },
-    { to: '/configuracoes', label: 'Configurações', icon: <SettingsIcon /> },
-  ];
+  const navItems = useMemo<navItem[]>(
+    () =>
+      [
+        { to: '/', label: 'Dashboard', icon: <HomeIcon /> },
+        {
+          to: '/usuarios',
+          label: 'Usuários',
+          icon: <UsersIcon />,
+          adminOnly: true,
+        },
+        {
+          to: '/perfis',
+          label: 'Perfis',
+          icon: <ProfileIcon />,
+          adminOnly: true,
+        },
+        {
+          to: '/configuracoes',
+          label: 'Configurações',
+          icon: <SettingsIcon />,
+        },
+      ].filter((item) => !item.adminOnly || isAdmin),
+    [isAdmin]
+  );
 
   const logout = () => {
     removeSession();
