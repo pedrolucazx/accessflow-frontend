@@ -10,10 +10,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import './styles.css';
 
 export function Settings() {
-  const {
-    session: { user },
-  } = useSession();
-
+  const { user } = useSession();
   const { addToast } = useToast();
 
   const filterByUserId = useMemo(
@@ -58,6 +55,24 @@ export function Settings() {
       }),
   });
 
+  const defaultValues = useMemo<UserFormData | undefined>(() => {
+    const currentUser = data?.getUserByParams;
+    if (!currentUser) return undefined;
+
+    return {
+      email: currentUser.email ?? '',
+      nome: currentUser.nome ?? '',
+      perfis:
+        currentUser.perfis?.map(({ nome, id }) => ({
+          label: nome,
+          value: String(id),
+          className: id === 1 ? 'badge--admin' : 'badge--common',
+        })) ?? [],
+    };
+  }, [data]);
+
+  const stillLoading = isLoadingUser || isLoadingEditUser || !defaultValues;
+
   const onSubmit = useCallback(
     (values: UserFormData) => {
       const input: UserInput = {
@@ -78,24 +93,6 @@ export function Settings() {
   useEffect(() => {
     getUserByParams();
   }, [getUserByParams]);
-
-  const defaultValues = useMemo<UserFormData | undefined>(() => {
-    const currentUser = data?.getUserByParams;
-    if (!currentUser) return undefined;
-
-    return {
-      email: currentUser.email ?? '',
-      nome: currentUser.nome ?? '',
-      perfis:
-        currentUser.perfis?.map(({ nome, id }) => ({
-          label: nome,
-          value: String(id),
-          className: id === 1 ? 'badge--admin' : 'badge--common',
-        })) ?? [],
-    };
-  }, [data]);
-
-  const stillLoading = isLoadingUser || isLoadingEditUser || !defaultValues;
 
   return (
     <main className="settings-page">

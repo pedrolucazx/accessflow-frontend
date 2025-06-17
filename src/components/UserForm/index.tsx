@@ -1,4 +1,3 @@
-import { ROUTES } from '@/config/routes';
 import { GET_ALL_PROFILES } from '@/graphql';
 import type { Perfil } from '@/graphql/types';
 import { useSession } from '@/hooks/useSession';
@@ -7,7 +6,6 @@ import { useQuery } from '@apollo/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { CustomSelect, type IOption } from '../CustomSelect';
 import './styles.css';
@@ -30,13 +28,9 @@ interface UserFormProps {
 }
 
 export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
-  const navigate = useNavigate();
   const { addToast } = useToast();
-  const {
-    isAuth,
-    session: { user },
-  } = useSession();
-  const isOwnUser = isAuth && Number(user?.id) === defaultValues?.id;
+  const { isAdmin, user } = useSession();
+  const isOwnUser = Number(user?.id) === defaultValues?.id;
   const showSenha = !defaultValues || isOwnUser;
 
   const {
@@ -49,18 +43,18 @@ export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
     defaultValues,
   });
 
-  const { data: profileList } = useQuery<{ getAllProfiles: Perfil[] }>(
-    GET_ALL_PROFILES,
-    {
-      onError(error) {
-        addToast({
-          title: 'Erro ao carregar perfis',
-          type: 'error',
-          description: error.message,
-        });
-      },
-    }
-  );
+  const { data: profileList } = useQuery<{
+    getAllProfiles: Perfil[];
+  }>(GET_ALL_PROFILES, {
+    skip: !isAdmin,
+    onError(error) {
+      addToast({
+        title: 'Erro ao carregar perfis',
+        type: 'error',
+        description: error.message,
+      });
+    },
+  });
 
   const options: IOption[] = useMemo(
     () =>
@@ -137,7 +131,7 @@ export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
             </div>
           )}
 
-          {isAuth && (
+          {isAdmin && (
             <div className="form__group">
               <label htmlFor="perfis" className="form__label">
                 Perfis
@@ -161,16 +155,6 @@ export function UserForm({ defaultValues, onSubmitForm }: UserFormProps) {
           <button type="submit" className="button button--primary form__button">
             {defaultValues ? 'Atualizar' : 'Cadastrar'}
           </button>
-
-          {!isAuth && (
-            <button
-              type="button"
-              onClick={() => navigate(ROUTES.NOT_PROTECTED.LOGIN)}
-              className="button button--secondary form__button"
-            >
-              Entrar
-            </button>
-          )}
         </form>
       </section>
     </main>

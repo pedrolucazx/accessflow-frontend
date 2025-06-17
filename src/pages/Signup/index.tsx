@@ -44,7 +44,7 @@ export function SignUp() {
         type: 'success',
         description: 'Sua conta foi criada. Você pode fazer login agora.',
       });
-      navigate('/login');
+      navigate(ROUTES.NOT_PROTECTED.LOGIN);
     },
     onError(error) {
       addToast({
